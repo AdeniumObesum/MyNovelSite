@@ -1,0 +1,95 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {% load mytags %}
+
+    {#                <h1 class="page-header">Dashboard</h1>#}
+    {##}
+    {#                <div class="row placeholders">#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                </div>#}
+
+    <h2 class="sub-header">很认真的标题</h2>
+    <div class="table-responsive">
+        <div class="panel panel-info">
+            <!-- Default panel contents -->
+            <div class="panel-heading">很认真的小标题 <span>(共有{{ all_num }}条)</span></div>
+            <div class="panel-body">
+            </div>
+
+            <!-- Table -->
+            <table class="table table-hover">
+                {% if query_sets %}
+                <thead>
+                <tr>
+                    {% for column in query_sets.0 %}
+                        {% if column != 'id' %}
+                            <th style="text-align: center">{{ column }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_sets %}
+                    <tr>
+                        {% for k,content in obj.items %}
+                            {% if k == '显示封面' %}
+                                <td style="text-align:center"><img
+                                        src="{% url 'get_img' obj.id %}" style="height: 80px;width: 60px"
+                                        alt=""></td>
+                            {% endif %}
+                            {% if k != '显示封面' and k != 'id' %}
+                                <td style="text-align: center;padding-top: 60px">{{ content }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <nav style="text-align:center">
+            <ul class="pagination">
+                {% if content_set.has_previous %}
+                    <li class=""><a
+                            href="?page={{ content_set.previous_page_number }}">上页</a>
+                    </li>
+                {% endif %}
+                {% for loop_counter in content_set.paginator.page_range %}
+                    {% render_page_ele loop_counter content_set %}
+                {% endfor %}
+
+                {% if content_set.has_next %}
+                    <li class=""><a
+                            href="?page={{ content_set.next_page_number }}">下页</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+
+{% endblock %}

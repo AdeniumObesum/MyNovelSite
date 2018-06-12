@@ -1,0 +1,120 @@
+{% extends 'index.html' %}
+{% block content %}
+
+    <form id="form" onsubmit="return submit_check()" action="" class="form-horizontal" method="post"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group">
+                <div class="col-lg-2">
+                    <label for="" class="">书名:</label>
+                </div>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" name="title" value="{{ obj.title }}">
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <div class="col-lg-2">
+                    <label for="" class="">作者:</label>
+                </div>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" name="author" value="{{ obj.author }}">
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <div class="col-lg-2">
+                    <label for="" class="">分类:</label>
+                </div>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" placeholder="类别之间用空格隔开" name="tags" value="{% for tag in obj.tags %}{{ tag }} {% endfor %}">
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                 <div class="col-lg-2">
+                    <label for="" class="">续更:</label>
+                </div>
+                <div class="col-lg-3">
+                    <span><a href="javascript:void (0)">此处应有a标签转到加更内容界面</a></span>
+
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <div class="col-lg-2">
+                    <label for="" class="">封面图片:</label>
+                </div>
+                <div class="col-lg-3">
+                    <img src="{% url 'get_img' obj.id %}" style="height: 80px;width: 60px" alt="">
+                    <input type="file" name="img_content">
+
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-3">
+                    <a id="delete" href="{% url 'novel_delete' obj.id %}" class="btn btn-danger">删除</a>
+                    <input type="submit" class="btn btn-primary pull-right" value="保存">
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            checkdelete();
+        });
+        function checkdelete() {
+            $("#delete").on('click',function () {
+                if(confirm("删除操作不可逆！你确定吗？")){
+                    return true;
+                }
+                else {
+
+                    return false;
+                }
+            });
+        }
+        function submit_check() {
+            var isvalid = true;
+            $("#form input").each(function (index, element) {
+
+                if ($(this).val() == '') {
+                    if ($(element)[0].type != "file") {
+                        isvalid = false;
+                        alert('请输入每一项内容。');
+                        return false;
+                    }
+                    else{
+
+                        return true;
+                    }
+                }
+            });
+
+            if (isvalid) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    </script>
+
+
+{% endblock %}
+
+

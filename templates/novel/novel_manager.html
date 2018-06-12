@@ -1,0 +1,209 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    {% load mytags %}
+
+    {#                <h1 class="page-header">Dashboard</h1>#}
+    {##}
+    {#                <div class="row placeholders">#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                    <div class="col-xs-6 col-sm-3 placeholder">#}
+    {#                        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="#}
+    {#                             width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">#}
+    {#                        <h4>Label</h4>#}
+    {#                        <span class="text-muted">Something else</span>#}
+    {#                    </div>#}
+    {#                </div>#}
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">添加有关信息：</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form" onsubmit="return submit_check()" action="{% url 'novel_add' %}"
+                          class="form-horizontal" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-lg-2">
+                                    <label for="" class="">书名:</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" name="title">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-lg-2">
+                                    <label for="" class="">作者:</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" name="author">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-lg-2">
+                                    <label for="" class="">分类:</label>
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" class="form-control" placeholder="类别之间用空格隔开" name="tags">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="col-lg-2">
+                                    <label for="" class="">封面图片:</label>
+                                </div>
+                                <div class="col-lg-3">
+                                    <input type="file" name="img_content">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" id="submit_button" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2 class="sub-header">很认真的标题</h2>
+    <div class="table-responsive">
+        <div class="panel panel-info">
+            <!-- Default panel contents -->
+            <div class="panel-heading">很认真的小标题 <span>(共有{{ all_num }}条)</span>
+                <button type="button" class="btn btn-xs pull-right btn-info" data-toggle="modal" data-target="#myModal">
+                    add+
+                </button>
+            </div>
+            <div class="panel-body">
+                <form class="navbar-form navbar-left pull-right" role="search">
+                    <div class="form-group form-group-sm">
+                        <input type="text" class="form-control" placeholder="Search" name="order_by_value">
+                        <select name="field" id="" class="form-control">
+
+                            <option value="">-----</option>
+                            {% for field,verbose_name in search_by.items %}
+                                <option value="{{ field }}">{{ verbose_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" value="搜索">
+                </form>
+            </div>
+
+            <!-- Table -->
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    {% for column in query_sets.0 %}
+                        {% if column != 'id' %}
+                            <th style="text-align: center">{{ column }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_sets %}
+                    <tr>
+                        {% for k,content in obj.items %}
+                            {% if k == '显示封面' %}
+                                <td style="text-align:center"><a href="{% url 'novel_edit' obj.id %}"><img
+                                        src="{% url 'get_img' obj.id %}" style="height: 80px;width: 60px" alt=""></a>
+                                </td>
+                            {% endif %}
+                            {% if k != '显示封面' and k != 'id' %}
+                                <td style="text-align: center;padding-top: 60px">{{ content }}</td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav style="text-align:center">
+            <ul class="pagination">
+                {% if content_set.has_previous %}
+                    <li class=""><a
+                            href="?page={{ content_set.previous_page_number }}">上页</a>
+                    </li>
+                {% endif %}
+                {% for loop_counter in content_set.paginator.page_range %}
+                    {% render_page_ele loop_counter content_set %}
+                {% endfor %}
+
+                {% if content_set.has_next %}
+                    <li class=""><a
+                            href="?page={{ content_set.next_page_number }}">下页</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            submit_event();
+        });
+
+        function submit_event() {
+            $("#submit_button").on('click', function () {
+                $("#form").submit();
+            });
+        }
+
+        function submit_check() {
+            var isvalid = true;
+            $("#form input").each(function (index, element) {
+
+                if ($(this).val() == '') {
+                    isvalid = false;
+                    alert('请输入每一项内容。');
+                    return false;
+                }
+            });
+
+            if (isvalid) {
+                return true;
+            } else {
+                return false;
+            }
+
+
+        }
+
+    </script>
+
+{% endblock %}
